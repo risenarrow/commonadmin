@@ -1,0 +1,111 @@
+app\gotochat\model\UserModel::__set_state(array(
+   'pk' => 'id',
+   'table' => '__GOTOCHAT_USER__',
+   'param' => 
+  array (
+  ),
+   'msg' => '',
+   'exists' => true,
+   'replace' => false,
+   'force' => false,
+   'updateWhere' => 
+  array (
+    0 => 
+    array (
+      0 => 'id',
+      1 => '=',
+      2 => 1,
+    ),
+  ),
+   'connection' => 
+  array (
+  ),
+   'query' => NULL,
+   'name' => 'UserModel',
+   'auto' => 
+  array (
+  ),
+   'insert' => 
+  array (
+  ),
+   'update' => 
+  array (
+  ),
+   'queryInstance' => NULL,
+   'error' => NULL,
+   'defaultSoftDelete' => NULL,
+   'globalScope' => 
+  array (
+  ),
+   'field' => 
+  array (
+  ),
+   'json' => 
+  array (
+  ),
+   'jsonAssoc' => false,
+   'jsonType' => 
+  array (
+  ),
+   'disuse' => 
+  array (
+  ),
+   'readonly' => 
+  array (
+  ),
+   'type' => 
+  array (
+  ),
+   'data' => 
+  array (
+    'id' => 1,
+    'nickname' => '用户_949186501',
+    'username' => '194918',
+    'password' => '028aec88c09ad749579c6e1ceecd6c40',
+    'salt' => 'ldSX@c',
+    'email' => '875850117@qq.com',
+    'register_time' => 1660194918,
+    'last_login_time' => 1660283092,
+    'status' => 1,
+  ),
+   'set' => 
+  array (
+  ),
+   'origin' => 
+  array (
+    'id' => 1,
+    'nickname' => '用户_949186501',
+    'username' => '194918',
+    'password' => '028aec88c09ad749579c6e1ceecd6c40',
+    'salt' => 'ldSX@c',
+    'email' => '875850117@qq.com',
+    'register_time' => 1660194918,
+    'last_login_time' => 1660283092,
+    'status' => 1,
+  ),
+   'withAttr' => 
+  array (
+  ),
+   'parent' => NULL,
+   'relation' => 
+  array (
+  ),
+   'together' => NULL,
+   'relationWrite' => NULL,
+   'observerClass' => NULL,
+   'withEvent' => true,
+   'autoWriteTimestamp' => false,
+   'createTime' => 'create_time',
+   'updateTime' => 'update_time',
+   'dateFormat' => 'Y-m-d H:i:s',
+   'visible' => 
+  array (
+  ),
+   'hidden' => 
+  array (
+  ),
+   'append' => 
+  array (
+  ),
+   'resultSetType' => 'array',
+))

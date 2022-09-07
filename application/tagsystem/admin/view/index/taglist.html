@@ -1,0 +1,163 @@
+{extend name="admin@public/layout" /}
+{block name='main'}
+<div class="layui-tab">
+    <div class="layui-tab-content">
+        <div class="demoTable">
+            <div class="layui-inline">
+                <span>置顶：</span>
+                <div class="layui-inline">
+                    <select name="istop" class="layui-select">
+                        <option value="">选择</option>
+                        <option value="1">置顶</option>
+                        <option value="0">不置顶</option>
+                    </select>
+                </div>
+            </div>
+            <button class="layui-btn" lay-event="search" id="search">立即提交</button>
+        </div>
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+    </div>
+</div>
+
+<script type="text/html" id="checkboxTpl">
+    <!-- 这里的 checked 的状态只是演示 -->
+    <input type="checkbox" moduleid={{d.id}}  name="istop" value="{{d.istop}}" title="置顶" lay-filter="lockDemo" {{ d.istop == 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+    </div>
+</script>
+
+{/block}
+{block name='script'}
+<script>
+    var url = '{:admin_url("tagsystem/index/taglist")}';
+    var addurl = '{:admin_url("tagsystem/index/add")}';
+    var editurl = '{:admin_url("tagsystem/index/edit")}';
+    var delurl = '{:admin_url("tagsystem/index/del")}';
+    var istoplurl = '{:admin_url("tagsystem/index/istop")}';
+    layui.use('table', function(){
+        var table = layui.table
+            ,form = layui.form;;
+
+        table.render({
+            elem: '#test'
+            ,url:url
+            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,defaultToolbar:[]
+            ,autoSort: false //禁用前端自动排序。
+            ,cols: [[
+                ,{field:'id',  title: '标签id',hide:true}
+                ,{field:'ico',  title: '图标',templet: '<div><img style="width: 30px;height: 30px" src="{{d.ico}}" alt="ico" /></div>'}
+                ,{field:'title',  title: '标题'}
+                ,{field:'link',  title: '链接'}
+                ,{field:'des',  title: '描述'}
+                ,{field:'user_name',  title: '用户名'}
+                ,{field:'istop', title: '是否置顶',templet: '#checkboxTpl', unresize: true/* , width: '30%', minWidth: 80 */}
+                ,{field:'addtime',title:'添加时间',sort:true}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', minWidth:50}
+            ]]
+            ,page: true
+        });
+
+
+        //触发排序事件
+        table.on('sort(test)', function(obj){ //注：sort 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            console.log(obj.field); //当前排序的字段名
+            console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+            console.log(this); //当前排序的 th 对象
+
+            //尽管我们的 table 自带排序功能，但并没有请求服务端。
+            //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
+            table.reload('test', {
+                initSort: obj //记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    field: obj.field //排序字段
+                    ,order: obj.type //排序方式
+                }
+            });
+
+            //layer.msg('服务端排序。order by '+ obj.field + ' ' + obj.type);
+        });
+
+        $("#search").click(function(){
+            var istop = $("select[name='istop']").val();
+
+            table.reload('test', {
+                where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    istop: istop
+                }
+            });
+        });
+
+        //监听行工具事件
+        //工具条事件
+        table.on('toolbar(test)', function(obj){
+            var layEvent = obj.event;
+            if (layEvent === 'add') {
+
+                window.location.href=addurl;
+            }
+        });
+
+
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除么？', function(index){
+                    y_utils.request_url({
+                        url:delurl,
+                        param:{id:data.id},
+                        success:function (da) {
+                            if (da.code ==1){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                return    y_utils.msg(da.msg);
+                            }
+                            return y_utils.msg(da.msg);
+                        }
+                    })
+                    //window.location.href='/adminuser/del.html';
+                });
+            }else if(layEvent == 'edit'){
+                window.location.href=editurl+'?id='+data.id;
+            }
+        });
+
+
+        //监听锁定操作
+        form.on('checkbox(lockDemo)', function(obj){
+            var param = {id:this.getAttribute("moduleid")};
+           if(obj.value == 1){
+               param.istop = 0;
+           }else{
+               param.istop = 1;
+           }
+
+            y_utils.request_url({
+                url:istoplurl,
+                param:param,
+                success:function(da) {
+                    if(da.code == 1){
+                        obj.value = param.istop;
+                        return    y_utils.successMsg(da.msg,function(){history.go(0)});
+                    }
+
+                    y_utils.errorMsg(da.msg);return false;
+                }
+            })
+            //layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+        });
+
+    });
+</script>
+{/block}

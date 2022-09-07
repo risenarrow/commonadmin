@@ -1,0 +1,72 @@
+array (
+  'file' => 
+  think\File::__set_state(array(
+     'error' => '',
+     'filename' => '/tmp/phpuDvqCC',
+     'saveName' => NULL,
+     'rule' => 'date',
+     'validate' => 
+    array (
+    ),
+     'isTest' => NULL,
+     'info' => 
+    array (
+      'name' => '1662041140399_u=4216761644,15569246&fm=253&fmt=auto&app=120&f=JPEG.jpg',
+      'type' => 'image/jpeg',
+      'tmp_name' => '/tmp/phpuDvqCC',
+      'error' => 0,
+      'size' => 29542,
+    ),
+     'hash' => 
+    array (
+    ),
+  )),
+)
+array (
+  'file' => 
+  think\File::__set_state(array(
+     'error' => '',
+     'filename' => '/tmp/phpw33W3b',
+     'saveName' => NULL,
+     'rule' => 'date',
+     'validate' => 
+    array (
+    ),
+     'isTest' => NULL,
+     'info' => 
+    array (
+      'name' => '1662041140144_u=4122738859,2522601053&fm=253&fmt=auto&app=138&f=JPEG.jpg',
+      'type' => 'image/jpeg',
+      'tmp_name' => '/tmp/phpw33W3b',
+      'error' => 0,
+      'size' => 22494,
+    ),
+     'hash' => 
+    array (
+    ),
+  )),
+)
+array (
+  'file' => 
+  think\File::__set_state(array(
+     'error' => '',
+     'filename' => '/tmp/phpnm19my',
+     'saveName' => NULL,
+     'rule' => 'date',
+     'validate' => 
+    array (
+    ),
+     'isTest' => NULL,
+     'info' => 
+    array (
+      'name' => '1662041140358_u=4277531701,3295668924&fm=253&fmt=auto&app=138&f=JPEG.jpg',
+      'type' => 'image/jpeg',
+      'tmp_name' => '/tmp/phpnm19my',
+      'error' => 0,
+      'size' => 25700,
+    ),
+     'hash' => 
+    array (
+    ),
+  )),
+)

@@ -1,0 +1,8 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">{$label}</label>
+    <div class="layui-input-block">
+        {foreach name='list_arr' item='item' key='key'}
+            <input type="checkbox" name="{$name}[]" title="{$item[1]}" value="{$item[0]}" {if in_array($item[0],$arr_value,true)}checked=""{/if}>
+        {/foreach}
+    </div>
+</div>

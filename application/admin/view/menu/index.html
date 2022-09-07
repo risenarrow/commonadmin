@@ -1,0 +1,51 @@
+{extend name="public/layout" /}
+{block name="main"}
+<div class="nav-tabs-custom" style="cursor: move;">
+	<div class="box-body">
+		<div class="tab-content no-padding">
+			<div class="row">
+				<div class="col-sm-12">
+					<table id="example2" class="layui-table" role="grid" aria-describedby="example2_info">
+						<thead>
+						<tr><td colspan="4">
+
+							<a class="layui-btn layui-btn-sm" href="{:url('admin/Menu/add')}">添加</button>
+
+							</td>
+						</tr>
+						<tr role="row">
+							<th class="sorting" tabindex="0"  rowspan="1" colspan="1" >排序</th>
+							<th class="sorting_asc" tabindex="0"  rowspan="1" colspan="1" >id</th>
+							<th class="sorting" tabindex="0"  rowspan="1" colspan="1" >菜单名称</th>
+							<th class="sorting" tabindex="0"  rowspan="1" colspan="1" >操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						{if $menulist}
+						{foreach name='menulist' item='vo' key='key'}
+						<tr role="row" class="odd">
+							<td><input class="form-control" style="width: 50px" type="text" name="menu[{$vo['id']}]" value="{$vo['sort']}" /></td>
+							<td class="sorting_1">{$vo['id']}</td>
+							<td>{$vo['name']|raw}</td>
+							<td>
+								<a href="{:url('admin/Menu/add',['parentid'=>$vo['id']])}"  class="layui-btn">添加子菜单</a>
+								<a href="{:url('admin/Menu/edit',['id'=>$vo['id']])}"  class="layui-btn">编辑</a>
+								<a href="{:url('admin/Menu/del',['id'=>$vo['id']])}" onclick=" return confirm('确定要删除菜单吗？') || false;"  class="layui-btn layui-btn-danger">删除</a>
+							</td>
+						</tr>
+						{/foreach}
+						{else}
+						<tr role="row" class="odd">
+							<td colspan="5" align="center">暂无数据~!</td>
+						</tr>
+						{/if}
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+							
+{/block}

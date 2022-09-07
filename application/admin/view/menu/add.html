@@ -1,0 +1,138 @@
+{extend name="public/layout" /}
+{block name="main"}
+			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			    <legend>填写</legend>
+			  </fieldset>
+
+			  <div class="layui-tab-content">
+			    <form class="layui-form" action="" id="demo1">
+					
+					
+			      <div class="layui-form-item">
+			        <label class="layui-form-label">父级菜单</label>
+			        <div class="layui-input-block">
+			          <select name="data[parentid]" lay-verify="required" >
+			             <option value="0" selected="">顶级菜单</option>
+						  {foreach name='list_menu' item='item' key = 'key'}
+						  <option value="{$item['id']}" {if condition="$parentid eq $item['id']"}selected{/if} >{$item['name']|raw}</option>
+						  {/foreach}
+			          </select>
+			        </div>
+			      </div>
+				  
+				  
+			      <div class="layui-form-item">
+			        <label class="layui-form-label">菜单名</label>
+			        <div class="layui-input-inline">
+			          <input type="text" name="data[name]" lay-verify="required"  placeholder="请输入菜单名" autocomplete="off" class="layui-input">
+			        </div>
+			      </div>
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">模块名</label>
+				    <div class="layui-input-inline">
+				      <input type="text" name="data[m]" lay-verify="required|enverify"  placeholder="请输入模块名" autocomplete="off" class="layui-input">
+				    </div>
+					<div class="layui-form-mid layui-word-aux">必须是英文，下划线，数字</div>
+				  </div>
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">控制器名</label>
+				    <div class="layui-input-inline">
+				      <input type="text" name="data[c]" lay-verify="required|enverify"  placeholder="请输入控制器名" autocomplete="off" class="layui-input">
+				    </div>
+					<div class="layui-form-mid layui-word-aux">必须是英文，下划线，数字</div>
+				  </div>
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">方法名</label>
+				    <div class="layui-input-inline">
+				      <input type="text" name="data[a]" lay-verify="required|enverify"  placeholder="请输入方法名" autocomplete="off" class="layui-input">
+				    </div>
+					<div class="layui-form-mid layui-word-aux">必须是英文，下划线，数字</div>
+				  </div>
+				  
+			      
+				<div class="layui-form-item">
+				  <label class="layui-form-label">排序</label>
+				  <div class="layui-input-inline">
+				    <input type="text" name="data[sort]"  autocomplete="off" placeholder="排序" class="layui-input">
+				  </div>
+					<div class="layui-form-mid layui-word-aux">数字越大，越靠前</div>
+				</div>
+				
+				
+				<div class="layui-form-item">
+				  <label class="layui-form-label">是否显示</label>
+				  <div class="layui-input-block">
+				    <input type="radio" name="data[show]" value="1" title="显示" checked="">
+				    <input type="radio" name="data[show]" value="0" title="隐藏">
+				  </div>
+				</div>
+				
+				  
+
+			      <div class="layui-form-item">
+			        <div class="layui-input-block">
+			          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+			          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			        </div>
+			      </div>
+			    </form>
+			  </div>
+{/block}
+
+{block name="script"}
+<script>
+var url = '{:url("admin/menu/add")}';
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate;
+  
+  
+  //创建一个编辑器
+  var editIndex = layedit.build('LAY_demo_editor');
+ 
+  //自定义验证规则
+  form.verify({
+    enverify:[
+		/^[A-Za-z0-9_]+$/,
+		'必须是英文，下划线，数字'
+	]
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
+  
+  //监听指定开关
+  form.on('switch(switchTest)', function(data){
+    layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+      offset: '6px'
+    });
+    layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+  });
+  
+  //监听提交
+  form.on('submit(demo1)', function(data){
+    y_utils.request_url({
+		url:url,
+		param:data.field,
+		success:function (data) {
+			if(data.code == 1){
+				y_utils.successMsg(data.msg,function(){
+					location.href=data.url;
+				});
+			}else{
+				y_utils.errorMsg(data.msg);
+			}
+		}
+	})
+    return false;
+  });
+
+  
+});
+</script>
+{/block}

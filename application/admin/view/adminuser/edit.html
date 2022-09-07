@@ -1,0 +1,111 @@
+{extend name='public/layout' /}
+{block name='main'}
+			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			    <legend>填写</legend>
+			  </fieldset>
+
+			  <div class="layui-tab-content">
+			    <form class="layui-form" action="">
+			      <div class="layui-form-item">
+			        <label class="layui-form-label">*管理员账号</label>
+			        <div class="layui-input-inline">
+			          <input type="text" name="admin_name" lay-verify="required|enverify" autocomplete="off" placeholder="请输入管理员账号" class="layui-input" value="{$data['admin_name']}">
+			        </div>
+					<div class="layui-form-mid layui-word-aux">格式为英文，下划线 ，数字</div>
+			      </div>
+			     
+			      
+				  
+				  
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">*管理员角色</label>
+				    <div class="layui-input-inline">
+				      <select name="role_id" lay-verify="required" >
+                          {foreach name='role_list' item='item' key='key'}
+                            {if $key != 1}
+				            <option value="{$key}" {if $key eq $data['role_id']}select=""{/if}>{$item['role_name']}</option>
+                            {/if}
+                           {/foreach}
+				      </select>
+				    </div>
+				  </div>
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">管理员密码</label>
+				    <div class="layui-input-inline">
+				      <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				    </div>
+				    <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+				  </div>
+				  
+				  
+				  <div class="layui-form-item">
+				    <label class="layui-form-label">再一次输入密码</label>
+				    <div class="layui-input-inline">
+				      <input type="password" name="repassword" lay-verify="required|pass" placeholder="请再一次输入密码" autocomplete="off" class="layui-input">
+				    </div>
+				  </div>
+
+			      <div class="layui-form-item">
+			        <div class="layui-input-block">
+						<input type="hidden" name="id" value="{$data['id']}" />
+			          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+			          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			        </div>
+			      </div>
+			    </form>
+			  </div>
+		{/block}
+{block name='script'}
+<script>
+    var addurl = '{:admin_url("admin/adminuser/edit")}';
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate;
+  
+  
+  //创建一个编辑器
+  var editIndex = layedit.build('LAY_demo_editor');
+ 
+  //自定义验证规则
+  form.verify({
+    enverify:[
+		/^[A-Za-z0-9_]+$/,
+		'配置名称必须是英文，下划线，数字'
+	]
+	,pass: [
+      /^[\S]{6,12}$/
+      ,'密码必须6到12位，且不能出现空格'
+    ]
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
+ 
+  
+  //监听提交
+  form.on('submit(demo1)', function(data){
+	  
+	  // if(data.field.password != data.field.repassword){
+		//   layer.alert('两次密码输入不正确！');return false;
+	  // }
+        y_utils.request_url({
+            url:addurl,
+            param:data.field,
+            success:function(da){
+                if(da.code == 1){
+                    y_utils.msg(da.msg);return ;
+                }
+                y_utils.msg(da.msg);
+            }
+        })
+    return false;
+  });
+
+  
+});
+</script>
+{/block}

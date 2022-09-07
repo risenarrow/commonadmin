@@ -1,0 +1,93 @@
+{extend name="public/layout" /}
+{block name="header"}{/block}
+{block name="left_nav"}{/block}
+
+{block name='stylesheet'}
+<style>
+    html,body,.layui-layout-admin{height: 100%;}
+  body{background: url("__ADMIN__/img/loginbg.jpg");background-repeat:no-repeat;background-size: cover }
+</style>
+
+{/block}
+{block name="wrap"}
+<div class="login-box-html">
+<div class="layui-box login-box">
+  <div class="login-logo">
+    <a href="javascript:;"><b>commonadmin后台</b></a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Sign in to start your session</p>
+
+    <form action="" class="layui-form" method="post" onsubmit="return false;">
+      <div class="layui-form-item form-group has-feedback">
+          <label class="layui-form-label">用户名</label>
+          <div class="layui-input-block">
+            <input type="text" class="layui-input" lay-verify="required" id="username" placeholder="用户名">
+          </div>
+      </div>
+      <div class="layui-form-item form-group has-feedback">
+          <label class="layui-form-label">密码</label>
+          <div class="layui-input-block">
+            <input type="password" class="layui-input" lay-verify="required" id="password" placeholder="密码">
+          </div>
+      </div>
+        <div class="layui-form-item form-group has-feedback">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" lay-verify="required" id="verifycode" placeholder="验证码">
+                <img src="{:captcha_src()}" id="verifyimg" class="verifyimg" onclick='this.src = "{:captcha_src()}?time="+(new Date().getTime())' alt="captcha" />
+            </div>
+        </div>
+        <div class="layui-form-item" pane="" style="text-align: initial">
+
+            <div class="layui-input-block">
+                <input type="checkbox" name="remember" lay-skin="primary" id="remember" title="记住我" checked="">
+                <button  lay-submit lay-filter="test" id="loginbtn" class="layui-btn layui-btn-lg">登录</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- /.social-auth-links -->
+
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+</div>
+{/block}
+{block name='script'}
+<script>
+  var loginurl = '{:admin_url("admin/publics/login")}';
+  var adminindex = '{:admin_url("admin/index/index")}';
+  var imgurl = '{:captcha_src()}';
+  layui.use('form',function(){
+      var form = layui.form;
+      form.on('submit(test)', function(){
+          var param = new Object();
+          param.username= $("#username").val();
+          param.password = $("#password").val();
+          param.remember = $("#remember").val();
+          param.verifycode = $("#verifycode").val();
+          y_utils.request_url({
+              url:loginurl,
+              param:param,
+              success:function(data){
+                  if(data.code == 1){
+                      y_utils.successMsg(data.msg,function(){
+                          location.href=adminindex;
+                      });
+                  }else{
+                      y_utils.errorMsg(data.msg);$("#verifyimg").attr('src',imgurl+'?time='+(new Date()).getTime());
+                  }
+              }
+          })
+      });
+  });
+
+
+</script>
+{/block}
+{block name="footer"}{/block}

@@ -1,0 +1,12 @@
+return [
+    'smtpserver'=>['type'=>'text','value'=>'risenarrow.6655.la'],
+    'smtpserverport'=>['type'=>'text','value'=>'30004'],
+    'smtpusermail'=>['type'=>'text','value'=>"xiakucao.top@mail.xiakucao.top"],
+    'smtpuser'=>['type'=>'text','value'=>"xiakucao.top"],
+    'smtppass'=>['type'=>'text','value'=>"1yang234"],
+    'debug'=>['type'=>'radio','value'=>[0=>'关闭',1=>'开启']],
+    'week'=>[
+        'type'=>'checkbox',
+        'value'=>[0=>'星期日',1=>'星期一',2=>'星期二']
+    ]
+];

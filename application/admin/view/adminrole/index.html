@@ -1,0 +1,89 @@
+{extend name='public/layout' /}
+{block name='main'}
+			<div class="layui-tab">
+				<div class="layui-tab-content">
+					<table class="layui-hide" id="test" lay-filter="test"></table>
+				</div>
+			</div>
+			
+
+				<script type="text/html" id="barDemo">
+                    {{# if(d.id != 1){ }}
+					<a class="layui-btn layui-btn-xs" lay-event="setpriv" >设置权限</a>
+					 <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
+					 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    {{# } }}
+				</script>
+				<script type="text/html" id="toolbarDemo">
+				  <div class="layui-btn-container">
+				     <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+				  </div>
+				</script>
+			
+		{/block}
+{block name='script'}
+<script>
+    var url = '{:admin_url("admin/adminrole/index")}';
+    var addurl = '{:admin_url("admin/adminrole/add")}';
+    var setprivurl = '{:admin_url("admin/adminrole/setpriv")}';
+    var editurl = '{:admin_url("admin/adminrole/edit")}';
+	var delurl = '{:admin_url("admin/adminrole/del")}';
+layui.use('table', function(){
+  var table = layui.table
+  ,form = layui.form;;
+  
+  table.render({
+    elem: '#test'
+    ,url:url
+    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+	 ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+	 ,defaultToolbar:[]
+    ,cols: [[
+	  ,{field:'id',  title: '角色id',hide:true}
+      ,{field:'role_name',  title: '角色名称'}
+      ,{field:'description',  title: '	描述'}
+      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', minWidth:50}
+    ]]
+	
+  });
+  
+    //监听行工具事件
+    //工具条事件
+	table.on('toolbar(test)', function(obj){
+			   var layEvent = obj.event;
+			   if (layEvent === 'add') {
+			   		
+			   		  window.location.href=addurl;
+			   }
+	});
+	
+    table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+      var data = obj.data; //获得当前行数据
+      var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+      var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+	  
+     if(layEvent === 'del'){ //删除
+        layer.confirm('真的删除么？', function(index){
+            y_utils.request_url({
+                url:delurl,
+                param:{id:data.id},
+                success:function (da) {
+                    if (da.code ==1){
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    return    y_utils.msg(da.msg);
+                    }
+                    return y_utils.msg(da.msg);
+                }
+            })
+         //window.location.href='/adminuser/del.html';
+        });
+      }else if(layEvent == 'setpriv'){
+         window.location.href=setprivurl+'?id='+data.id;
+     }else if(layEvent == 'edit'){
+         window.location.href=editurl+'?id='+data.id;
+     }
+    });
+	
+});
+</script>
+{/block}

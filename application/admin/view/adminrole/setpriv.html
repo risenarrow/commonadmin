@@ -1,0 +1,181 @@
+{extend name="public/layout" /}
+{block name="main"}
+            <div style="margin: 0 auto; max-width: 1140px;">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>{$data['role_name']}的权限</legend>
+                </fieldset>
+                <div id="test12" class="demo-tree demo-tree-box"></div>
+                <div class="layui-btn-container">
+                    <button type="button" class="layui-btn layui-btn-sm" lay-demo="getChecked">点击修改</button>
+                </div>
+            </div>
+{/block}
+{block name="script"}
+<script>
+    var setprivurl = '{:admin_url("admin/adminrole/setpriv")}'+'?id={$id}';
+    var changeprivurl = '{:admin_url("admin/adminrole/changepriv")}'+'?id={$id}';
+    layui.use(['tree', 'util'], function(){
+        var tree = layui.tree
+            ,layer = layui.layer
+            ,util = layui.util
+            ,data  = {};
+
+        y_utils.request_url({
+            url:setprivurl,
+            param:{},
+            success:function(da){
+                if(da.code === 0){
+                    data = da.data.tree;
+                    var priv_list = da.data.priv_list;
+                    //基本演示
+                    tree.render({
+                        elem: '#test12'
+                        ,data: data
+                        ,showCheckbox: true  //是否显示复选框
+                        ,id: 'demoId1'
+                        ,isJump: false //是否允许点击节点时弹出新窗口跳转
+                        ,click: function(obj){
+                            // var data = obj.data;  //获取当前点击的节点数据
+                            // layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
+                        }
+                        ,oncheck: function(obj){
+                            //getIds(tree.getChecked('demoId1'),priv_list);
+                            var id = obj.data.id;
+                              //如果是选中，把它放进priv_list
+                            if(!y_utils.inArray(id,priv_list)){
+
+                                if(!y_utils.inArray(id,priv_list)){
+                                    priv_list.push(id);
+                                }
+                                //如果有孩子，把孩子也放进去遍历把孩子放进去
+
+                                getchildid(obj.data.children,priv_list);
+                                //如果父对象的孩子都选中，那么父对象也选中
+                                getparentid(obj.elem,priv_list);
+                            }
+                            //如果取消选中，把它取出来
+                            else{
+                                y_utils.removeArray(id,priv_list);
+                                //如果有孩子，把孩子也取消选择,遍历把孩子取消选择
+                               cancel_childid(obj.data.children,priv_list);
+                               //如果有父亲，把父亲也取消选择
+                                cancel_parentid(obj.elem,priv_list);
+                            }
+
+                            setcheck(priv_list);
+                        }
+                    });
+
+                    //tree.setChecked('demoId1', priv_list); //勾选指定节点
+                    // //缓存之前的选项
+                     setcheck(priv_list);
+
+                }else{
+                    y_utils.msg(da.msg);
+                }
+            }
+        });
+
+        function getIds(arr,ids){
+
+            for (var key in arr){
+                ids.push(arr[key].id);
+                if(arr[key].children.length > 0){
+                    getIds(arr[key].children,ids);
+                }
+            }
+
+            return ids;
+        }
+        //按钮事件
+        util.event('lay-demo', {
+            getChecked: function(othis){
+                var ids = [];
+                var checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
+                getIds(checkedData,ids);
+                y_utils.request_url({
+                    url:changeprivurl,
+                    param:{'ids':ids},
+                    success:function(da){
+                        if(da.code ==1){
+                            return y_utils.successMsg(da.msg,function(){history.go(0)});
+                        }
+                        return y_utils.errorMsg(da.msg);
+                    }
+                })
+            },
+        });
+
+        /**
+         * 自定义选择,缓存之前的选项
+         */
+        function setcheck(priv_list){
+            $('.layui-form-checkbox').removeClass('layui-form-checked');
+            for(var k in priv_list){
+                $('input[name="name'+priv_list[k]+'"').parent().parent().find('.layui-form-checkbox').eq(0).addClass('layui-form-checked');
+            }
+        }
+
+        //当选中时，把孩子也选中
+        function getchildid(obj,arr){
+            for (var key in obj){
+                if(!y_utils.inArray(obj[key].id,arr)) {
+                    arr.push(obj[key].id);
+                }
+                if(obj[key].children.length>0){
+                    getchildid(obj[key].children,arr)
+                }
+            }
+
+            return arr;
+        }
+        //当选中时，如果父亲的孩子都选中，那么父亲也选中
+        function getparentid(obj,arr){
+            var ob = obj.parents('div.layui-tree-set.layui-tree-spread').eq(0);
+            if(!y_utils.isUndefined(ob)){
+                if(!y_utils.inArray(ob.data('id'),arr)){
+
+                    arr.push(ob.data('id'));
+                    if(ob.parents('div.layui-tree-set.layui-tree-spread').length > 0){
+                        getparentid(ob,arr);
+                    }
+                }
+            }
+            return arr;
+        }
+
+        //当取消选择时，把孩子也取消选择
+        function cancel_childid(obj,arr){
+            for (var key in obj){
+                y_utils.removeArray(obj[key].id,arr);
+                if(obj[key].children.length>0){
+                    cancel_childid(obj[key].children,arr)
+                }
+            }
+        }
+        //当取消选择时，如果父亲的所有孩子都取消了选择，那么它也取消选择
+        function cancel_parentid(obj,arr){
+            var ob = obj.parents('div.layui-tree-set.layui-tree-spread').eq(0);
+            if(!y_utils.isUndefined(ob)){
+                //判断孩子们是否都取消了选择
+                var re = true;
+                var oob = ob.find('div.layui-tree-set.layui-tree-spread');
+
+                for(var key in oob){
+                    if(y_utils.inArray(parseInt(oob.eq(key).attr('data-id')),arr)){
+                        re = false;
+                    }
+                }
+
+                if(re){
+                   y_utils.removeArray(ob.data('id'),arr);
+                }
+
+                if(ob.parents('div.layui-tree-set.layui-tree-spread').length > 0){
+                    cancel_parentid(ob,arr);
+                }
+            }
+        }
+    })
+</script>
+{/block}

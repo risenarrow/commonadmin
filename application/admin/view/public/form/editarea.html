@@ -1,0 +1,10 @@
+<div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">{$label}</label>
+    <div class="layui-input-block">
+        <textarea class="layui-textarea layui-hide" name="{$name}" lay-verify="{$name}" id="LAY_demo_editor_{$name}">{$value}</textarea>
+    </div>
+</div>
+<script>
+    //创建一个编辑器
+    var LAY_demo_editor_{$name} = layui.layedit.build('LAY_demo_editor_{$name}');
+</script>

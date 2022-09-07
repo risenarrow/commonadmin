@@ -1,0 +1,57 @@
+{extend name='admin@public/layout' /}
+{block name='main'}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+	<legend>填写</legend>
+</fieldset>
+
+<div class="layui-tab-content">
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">*分类名</label>
+			<div class="layui-input-inline">
+				<input type="text" name="cat_name" lay-verify="required" autocomplete="off" placeholder="请输入分类名" class="layui-input" value="{$data['cat_name']}" >
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="hidden" name="id" value="{$data['id']}" />
+				<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+{/block}
+
+{block name='script'}
+<script>
+	var addurl = '{:admin_url("tagsystem/index/editcat")}';
+	layui.use(['form', 'layedit', 'laydate'], function(){
+		var form = layui.form
+				,layer = layui.layer
+				,layedit = layui.layedit
+				,laydate = layui.laydate;
+
+
+
+		//监听提交
+		form.on('submit(demo1)', function(data){
+
+			y_utils.request_url({
+				url:addurl,
+				param:data.field,
+				success:function(da){
+					if(da.code == 1){
+						return y_utils.successMsg(da.msg);
+					}
+					return y_utils.errorMsg(da.msg);
+				}
+			})
+			return false;
+		});
+
+
+	});
+</script>
+{/block}

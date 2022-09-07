@@ -1,0 +1,8 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">{$label}</label>
+    <div class="layui-input-block">
+        {foreach name='list_arr' item='item' key='key'}
+        <input type="radio" name="{$name}" value="{$item[0]}" title="{$item[1]}" {if $value eq $item[0]}checked=""{/if}>
+        {/foreach}
+    </div>
+</div>

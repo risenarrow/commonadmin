@@ -1,0 +1,84 @@
+{extend name='admin@public/layout' /}
+{block name='main'}
+			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			    <legend>填写</legend>
+			  </fieldset>
+
+			  <div class="layui-tab-content">
+			    <form class="layui-form" action="">
+					<div class="layui-form-item">
+						<label class="layui-form-label">*项目</label>
+						<div class="layui-input-inline">
+							<select name="project_id" lay-verify="required" lay-filter="project">
+								<option value="" selected="">选择项目</option>
+								{foreach name='project_list' item='item' key = 'key'}
+								<option value="{$item['id']}" {if condition="$item['id'] eq $data['project_id']"}selected=""{/if}>{$item['project_title']}</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">*菜单</label>
+						<div class="layui-input-inline">
+							<select name="menu_id" lay-verify="required" lay-filter="menu" >
+								<option value="" selected="">选择菜单</option>
+								{foreach name='menu_list' item='item' key = 'key'}
+								<option value="{$item['id']}" {if condition="$item['id'] eq $data['menu_id']"}selected=""{/if}>{$item['menu_title']}</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">*属性名称</label>
+						<div class="layui-input-inline">
+							<input type="text" name="attrcat_title" lay-verify="required" autocomplete="off" placeholder="请输入属性名称" class="layui-input" value="{$data['attrcat_title']}" >
+						</div>
+					</div>
+
+
+
+
+
+					<div class="layui-form-item">
+			        <div class="layui-input-block">
+						<input type="hidden" value="{$data['id']}"  name="id"/>
+			          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+			          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			        </div>
+			      </div>
+			    </form>
+			  </div>
+			
+		{/block}
+
+{block name='script'}
+<script>
+    var editurl = '{:admin_url("simplebook/attrcat/edit")}';
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate;
+
+
+
+  //监听提交
+  form.on('submit(demo1)', function(data){
+
+    y_utils.request_url({
+        url:editurl,
+        param:data.field,
+        success:function(da){
+            if(da.code == 1){
+               return y_utils.successMsg(da.msg);
+            }
+            return y_utils.errorMsg(da.msg);
+        }
+    })
+    return false;
+  });
+
+
+});
+</script>
+{/block}

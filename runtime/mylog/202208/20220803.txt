@@ -1,0 +1,21 @@
+array (
+  'id' => 9,
+  'plugin_title' => '发送邮件',
+  'plugin_name' => 'smtp',
+  'plugin_desc' => '这是用来发送邮件的插件，配置里面需要填写stmp服务器',
+  'status' => 1,
+)
+array (
+  'id' => 9,
+  'plugin_title' => '发送邮件',
+  'plugin_name' => 'smtp',
+  'plugin_desc' => '这是用来发送邮件的插件，配置里面需要填写stmp服务器',
+  'status' => 1,
+)
+array (
+  'id' => 9,
+  'plugin_title' => '发送邮件',
+  'plugin_name' => 'smtp',
+  'plugin_desc' => '这是用来发送邮件的插件，配置里面需要填写stmp服务器',
+  'status' => 1,
+)
