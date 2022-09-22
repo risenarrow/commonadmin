@@ -309,7 +309,7 @@ class FriendsModel extends GotoChatBaseModel
               'msg_id'=>$body['msg_id'],
               'msg_type'=>$body['msg_type'],
               'add_time'=>time(),
-              'avatar'=>$userinfo['avatar'],
+              'avatar'=>$userinfo['avatar'],     //发送消息者头像
               'nickname'=>$tofriendship['friend_remark'],
               'group_avatar'=>'',
               'group_name'=>''
@@ -399,8 +399,12 @@ class FriendsModel extends GotoChatBaseModel
         $re = self::where([
             ['friend_id','=',$body['friend_id']],
             ['user_id','=',$header['user_id']]
-        ])->find()->toArray();
-        $re['qianming'] = $friend_info['qianming'];
+        ])->find();
+        if($re){
+            $re = $re->toArray();
+            $re['qianming'] = $friend_info['qianming'];
+        }
+
         return $re;
     }
 

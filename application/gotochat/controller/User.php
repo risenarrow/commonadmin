@@ -7,10 +7,17 @@ use app\gotochat\model\UserModel;
 use think\App;
 class User extends GotoChatBase
 {
-
+    public $remsg;
+    public $ws;
+    public $frame;
+    private $set;
     public function __construct($msg=[],$ws,$frame)
     {
-        parent::__construct(null,$msg,$ws,$frame);
+        parent::__construct(null, $msg,$ws,$frame);
+        $this->remsg = $msg;
+        $this->ws = $ws;
+        $this->frame = $frame;
+        $this->set =  new UserModel( $this->remsg);
     }
 
     public function index($msg,$ws,$frame){
@@ -59,6 +66,20 @@ class User extends GotoChatBase
     }
 
     /**
+     * 获取自己的信息
+     * @author yang
+     * Date: 2022/9/9
+     */
+    public function getself(){
+        $this->set->setParam($this->remsg);
+        $re = $this->set->getself();
+        if($re !== false){
+            $this->ws->push($this->frame->fd,$this->echoJson($this->set->getMsg(),0,0,$re));  return ;
+        }
+        $this->ws->push($this->frame->fd,$this->echoJson($this->set->getMsg(),1,0,[]));  return ;
+    }
+
+    /**
      * 申请添加好友
      * @param $msg
      * @param $ws
@@ -97,6 +118,8 @@ class User extends GotoChatBase
         }
         $ws->push($frame->fd,$this->echoJson($set->getMsg(),1,0,[]));  return ;
     }
+
+
 
 
 

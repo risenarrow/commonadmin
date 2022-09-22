@@ -10,6 +10,7 @@ namespace app\gotochat\model;
 
 
 use app\common\model\FrontModel;
+use app\common\utils\File;
 use app\common\utils\Redis\RedisService;
 use app\common\utils\Yutils;
 use app\gotochat\validate\User as UserValidate;
@@ -269,6 +270,7 @@ class UserModel extends FrontModel
             'qianming'=>$info['qianming'],
             'sex'=>$info['sex'],
             'friend_id'=>$info['id'],
+            'avatar'=>$info['avatar'],
             'friend_remark'=>''
         ];
         if($isfriend){
@@ -280,6 +282,43 @@ class UserModel extends FrontModel
             return false;
         }
         return $redata;
+    }
+
+    /**
+     * 获取自己信息
+     * @author yang
+     * Date: 2022/9/9
+     */
+    public function getself(){
+        $data = $this->param;
+        $header = $data['header'];
+        $body = $data['body'];
+        if(!self::checkLogin($header['user_id'],$header['authtoken'])){
+            $this->msg = "请先登录";
+            return false;
+        }
+        $re = self::getUserinfoById($body['user_id']);
+        if($re){
+            return $re->toArray();
+        }
+       return $re;
+    }
+
+    public  function setAvatar($user_id=0,$avatar_path=''){
+
+        if(!$user_id){
+            return false;
+        }
+
+        //把头像文件改一下文件名
+        $filename = md5($user_id).".png";
+        $newpath = preg_replace('/[^\/]+\.png|jpg/',$filename,$avatar_path);
+
+        File::delfile("./".$newpath);
+        File::moveDir("./".$avatar_path,"./".$newpath);
+        self::where('id','=',$user_id)->update(['avatar'=>$newpath."?v=".time()]);
+        FriendReq::where('friend_id','=',$user_id)->update(['friend_avatar'=>$newpath."?v=".time()]);
+        return $newpath;
     }
 
 
