@@ -321,6 +321,24 @@ class UserModel extends FrontModel
         return $newpath;
     }
 
+    public function qrpng(){
+        $data = $this->param;
+        $header = $data['header'];
+        $body = $data['body'];
+        if(!self::checkLogin($header['user_id'],$header['authtoken'])){
+            $this->msg = "请先登录";
+            return false;
+        }
+        $re = self::getUserinfoById($body['user_id']);
+        if($re){
+            $re=$re->toArray();
+
+        }else{
+            return false;
+        }
+
+    }
+
 
     /**
      * 用户成功登录后一系列操作

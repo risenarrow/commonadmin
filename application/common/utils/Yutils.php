@@ -340,4 +340,8 @@ class Yutils{
            shell_exec( $command );
     }
 
+    public static function getQr($text="",$image = ""){
+        \QRcode::png();
+    }
+
 }
