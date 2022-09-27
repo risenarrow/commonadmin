@@ -95,7 +95,9 @@ class Index  extends FrontBase
         if($files){
             if($upload->upload($files)){
                 /*如果是视频，截取封面图*/
-                Yutils::getVideoCover("./".$upload->getPath(),"./".preg_replace("/\.([\s\S]+)/",'.jpg',$upload->getPath()));
+                if($data['msg_type'] ==2){
+                    Yutils::getVideoCover("./".$upload->getPath(),"./".preg_replace("/\.([\s\S]+)/",'.jpg',$upload->getPath()));
+                }
                 $this->echoJson("上传成功",0,0,['src'=>$upload->getPath()]);
             }else{
                 $this->echoJson($upload->getMsg(),1,0,[]);
@@ -105,6 +107,26 @@ class Index  extends FrontBase
         }
     }
 
+    public function setavatar(){
 
+        $files = $this->request->file();
+        $data = $this->request->param();
+        $upload = new Upload();
+        $upload->setDirName("gotochat/avatar");
+        if($files){
+            if($upload->upload($files)){
+                $user = new UserModel();
+
+                $newpath =  $user->setAvatar($this->request->header('userid'),$upload->getPath());
+                if($newpath){
+                    $this->echoJson("上传成功",0,0,['src'=>$newpath]);
+                }else{
+                    $this->echoJson("上传失败",1,0,[]);
+                }
+            }else{
+                $this->echoJson($upload->getMsg(),1,0,[]);
+            }
+        }
+    }
 
 }

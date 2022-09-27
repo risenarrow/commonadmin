@@ -8,11 +8,14 @@ use app\record\model\Record;
 use app\record\model\RecordMember;
 use think\App;
 use app\common\utils\Upload;
+use think\facade\Cache;
+use think\Request;
 
 class Index extends FrontBase
 {
     function __construct(App $app = null)
     {
+
         parent::__construct($app);
         $this->set = new Record();
     }
